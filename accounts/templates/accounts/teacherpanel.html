@@ -30,5 +30,19 @@ tr:nth-child(even) {
   {% endfor %}
 
 </table>
+<hr>
+  <h2><a href="{% url 'exercise_form' %}">Add More Exercises</a></h2>
+  <hr>
+<div class="container">
+  {% for video in videos %}
+  <h3 class="text-center mt-2 mb-2"><a href="{% url 'video' video.id %}">{{video.caption}}</a></h3>
+  {% endfor %}
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{form.as_p}}
+  <button type="submit" class="btn btn-primary">Upload Video</button>
+</form>
 
 {% endblock content %}

@@ -7,6 +7,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user, allowed_users, teacher_only
 from .models import *
+from .forms import *
 # Create your views here.
 
 @login_required(login_url='login')
@@ -47,17 +48,68 @@ def logoutPage(request):
 def teacherPanel(request):
     exercises = Exercise.objects.all()
     total_exercises = exercises.count()
-    context = {'exercises': exercises, 'total_exercises': total_exercises}
+    videos = Submission.objects.all()
+    if request.method == 'POST':
+        form = VideoForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('teacher_panel')
+    else:
+        form = VideoForm()
+    context = {'exercises': exercises, 'total_exercises': total_exercises, 'videos': videos, 'form': form}
     return render(request, 'accounts/teacherpanel.html', context)
 
+@login_required(login_url='login')
+@teacher_only
+def exerciseForm(request):
+    if request.method == 'POST':
+        form = ExerciseForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('teacher_panel')
+    else:
+        form = ExerciseForm()
+    context = {'form': form}
+    return render(request, 'accounts/exercise_form.html', context)
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['student'])
 def studentPanel(request):
     exercises = request.user.student.exercises.all()
-    context = {'exercises': exercises}
+    videos = Submission.objects.all()
+    context = {'exercises': exercises, 'videos': videos}
     return render(request, 'accounts/studentpanel.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teacher'])
+def accountSettings(request):
+    context = {}
+    return render(request, 'accounts/account_settings.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teacher'])
 def exercise(request, pk):
     exercise = Exercise.objects.get(id=pk)
-    students = exercise.student_set.all()
-    context = {'students': students}
+    students = Student.objects.all()
+    solutions = exercise.solution_set.all()
+    print(solutions)
+    context = {'students': students, 'exercise': exercise, 'solutions': solutions}
     return render(request, 'accounts/exercises.html', context)
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['teacher', 'student'])
+def video(request, pk):
+    video = Submission.objects.get(id=pk)
+    context = {'video': video}
+    return render(request, 'accounts/video.html', context)
+
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['student'])
+def submitAnswer(request):
+    if request.method == 'POST':
+        form = AnswerForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('student_panel')
+    else:
+        form = AnswerForm()
+    context = {'form': form}
+    return render(request, 'accounts/submit_answer.html', context)

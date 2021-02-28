@@ -29,10 +29,19 @@ tr:nth-child(even) {
   <tr>
     <td>{{exercise}}</td>
     <td>{{exercise.date_created}}</td>
-    <td><a href="">Enter</a></td>
+    <td><a href="{% url 'submit_answer' %}">Enter</a></td>
   </tr>
   {% endfor %}
 
 </table>
+
+<br>
+
+<div class="container">
+  {% for video in videos %}
+  <h3 class="text-center mt-2 mb-2"><a href="{% url 'video' video.id %}">{{video.caption}}</a></h3>
+  {% endfor %}
+</div>
+
 
 {% endblock content %}

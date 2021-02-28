@@ -1,0 +1,29 @@
+{% extends 'accounts/main.html'%}
+{% block content %}
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+<h2>Watch The Video</h2>
+
+
+  <hr>
+<div class="container">
+  <video class="embed-responsive embed-responsive-16by9" controls="contorls">
+    <source src="{{video.video.url}}" type="video/mp4">
+  </video>
+</div>
+{% endblock content %}

@@ -2,6 +2,7 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
+from .models import Submission, Exercise, Solution
 
 
 
@@ -10,3 +11,17 @@ class CreateUserForm(UserCreationForm):
 		model = User
 		fields = ['username', 'email', 'password1', 'password2']
 
+class VideoForm(forms.ModelForm):
+	class Meta:
+		model = Submission
+		fields = ['caption', 'video']
+
+class ExerciseForm(forms.ModelForm):
+	class Meta:
+		model = Exercise
+		fields = ['name', 'description']
+
+class AnswerForm(forms.ModelForm):
+	class Meta:
+		model = Solution
+		fields = ['studentsub', 'exercisesub', 'file']
