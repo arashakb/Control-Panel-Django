@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user, allowed_users, teacher_only
+from .models import *
 # Create your views here.
 
 @login_required(login_url='login')
@@ -40,10 +41,23 @@ def loginPage(request):
 def logoutPage(request):
     logout(request)
     return redirect('login')
+
 @login_required(login_url='login')
 @teacher_only
 def teacherPanel(request):
-    return render(request, 'accounts/teacherpanel.html')
+    exercises = Exercise.objects.all()
+    total_exercises = exercises.count()
+    context = {'exercises': exercises, 'total_exercises': total_exercises}
+    return render(request, 'accounts/teacherpanel.html', context)
+
+@login_required(login_url='login')
 @allowed_users(allowed_roles=['student'])
 def studentPanel(request):
-    return render(request, 'accounts/studentpanel.html')
+    exercises = request.user.student.exercises.all()
+    context = {'exercises': exercises}
+    return render(request, 'accounts/studentpanel.html', context)
+def exercise(request, pk):
+    exercise = Exercise.objects.get(id=pk)
+    students = exercise.student_set.all()
+    context = {'students': students}
+    return render(request, 'accounts/exercises.html', context)

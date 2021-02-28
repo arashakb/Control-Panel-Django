@@ -1,6 +1,38 @@
 {% extends 'accounts/main.html'%}
 {% block content %}
+<style>
+table {
+  font-family: arial, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
 
-<h1>Student Page</h1>
+td, th {
+  border: 1px solid #dddddd;
+  text-align: left;
+  padding: 8px;
+}
+
+tr:nth-child(even) {
+  background-color: #dddddd;
+}
+</style>
+<h2>Student Panel</h2>
+
+<table>
+  <tr>
+    <th>Student Number</th>
+    <th>Date Updated</th>
+    <th>Submit Answer</th>
+  </tr>
+  {% for exercise in exercises %}
+  <tr>
+    <td>{{exercise}}</td>
+    <td>{{exercise.date_created}}</td>
+    <td><a href="">Enter</a></td>
+  </tr>
+  {% endfor %}
+
+</table>
 
 {% endblock content %}

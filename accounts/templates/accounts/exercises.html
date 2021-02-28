@@ -17,15 +17,15 @@ tr:nth-child(even) {
   background-color: #dddddd;
 }
 </style>
-<h2>Teacher Panel</h2>
+<h2>Exercises</h2>
 
 <table>
   <tr>
     <th>Student Number</th>
   </tr>
-  {% for exercise in exercises %}
+  {% for student in students %}
   <tr>
-    <td><a href="{% url 'exercise' exercise.id %}">{{exercise}}</a></td>
+    <td>{{student.student_id}}</td>
   </tr>
   {% endfor %}
 
