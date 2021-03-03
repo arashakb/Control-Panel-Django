@@ -2,9 +2,12 @@ from django.forms import ModelForm
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
-from .models import Submission, Exercise, Solution
+from .models import Submission, Exercise, Solution, Student
 
-
+class StudentForm(ModelForm):
+	class Meta:
+		model = Student
+		fields = ['name', 'email', 'profile_pic']
 
 class CreateUserForm(UserCreationForm):
 	class Meta:

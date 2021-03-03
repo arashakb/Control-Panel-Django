@@ -33,6 +33,7 @@ class Solution(models.Model):
     studentsub = models.ForeignKey(Student, null=True, on_delete=models.SET_NULL)
     exercisesub = models.ForeignKey(Exercise, null=True, on_delete=models.SET_NULL)
     file = models.FileField(default='No Upload', upload_to='accounts/media/', null=True)
+    mark = models.IntegerField(null=True)
     date_created = models.DateTimeField(auto_now_add=True, null=True)
 
 class Submission(models.Model):

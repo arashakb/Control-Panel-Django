@@ -74,15 +74,21 @@ def exerciseForm(request):
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['student'])
 def studentPanel(request):
-    exercises = request.user.student.exercises.all()
+    exercises = Exercise.objects.all()
     videos = Submission.objects.all()
     context = {'exercises': exercises, 'videos': videos}
     return render(request, 'accounts/studentpanel.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['teacher'])
+@allowed_users(allowed_roles=['student'])
 def accountSettings(request):
-    context = {}
+    student = request.user.student
+    form = StudentForm(instance=student)
+    if request.method == 'POST':
+        form = StudentForm(request.POST, request.FILES, instance=student)
+        if form.is_valid():
+            form.save()
+    context = {'form': form}
     return render(request, 'accounts/account_settings.html', context)
 
 @login_required(login_url='login')
@@ -103,13 +109,14 @@ def video(request, pk):
 
 @login_required(login_url='login')
 @allowed_users(allowed_roles=['student'])
-def submitAnswer(request):
+def submitAnswer(request, pk):
+    student = Solution.objects.get(id=pk)
+    form = AnswerForm(instance=student)
     if request.method == 'POST':
-        form = AnswerForm(request.POST, request.FILES)
+        form = AnswerForm(request.POST, request.FILES, instance=student)
         if form.is_valid():
             form.save()
             return redirect('student_panel')
-    else:
-        form = AnswerForm()
+
     context = {'form': form}
     return render(request, 'accounts/submit_answer.html', context)

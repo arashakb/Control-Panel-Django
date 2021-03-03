@@ -14,7 +14,7 @@ urlpatterns = [
     path('account/', views.accountSettings, name='account'),
     path('video/<str:pk>', views.video, name='video'),
     path('exercise_form/', views.exerciseForm, name='exercise_form'),
-    path('submit_answer', views.submitAnswer, name='submit_answer')
+    path('submit_answer/<str:pk>', views.submitAnswer, name='submit_answer')
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
