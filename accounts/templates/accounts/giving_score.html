@@ -1,0 +1,12 @@
+{% extends 'accounts/main.html'%}
+{% block content %}
+
+<br>
+<br>
+<form method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{form.as_p}}
+  <button type="submit" class="btn btn-primary">Upload Exercise</button>
+</form>
+
+{% endblock content %}

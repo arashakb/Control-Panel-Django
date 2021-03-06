@@ -28,3 +28,8 @@ class AnswerForm(forms.ModelForm):
 	class Meta:
 		model = Solution
 		fields = ['studentsub', 'exercisesub', 'file']
+
+class ScoreForm(forms.ModelForm):
+	class Meta:
+		model = Solution
+		fields = ['mark']
