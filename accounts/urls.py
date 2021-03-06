@@ -8,8 +8,7 @@ urlpatterns = [
     path('', Home.as_view(), name='home'),
     path('teacher_panel', TeacherPanel.as_view(), name='teacher_panel'),
     path('student_panel', StudentPanel.as_view(), name='student_panel'),
-    path('register/', views.registerPage, name='register'),
-    path('login/', LoginView.as_view(), name='login'),
+    path('accounts/login/', LoginView.as_view(), name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('exercise/<str:pk>/', ExerciseView.as_view(), name='exercise'),
 
@@ -19,6 +18,7 @@ urlpatterns = [
     path('exercise_form/', ExerciseForm.as_view(), name='exercise_form'),
     path('submit_answer/<str:pk>', SubmitAnswer.as_view(), name='submit_answer'),
     path('giving_score/<str:pk>', GivingScore.as_view(), name='giving_score'),
+
     path('bad_type', views.badType, name='bad_type')
 ]
 if settings.DEBUG:

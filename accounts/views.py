@@ -19,18 +19,6 @@ class Home(View):
     def get(self, request):
         return render(request, 'accounts/dashboard.html')
 
-@unauthenticated_user
-def registerPage(request):
-    if request.user.is_authenticated:
-        return redirect('home')
-    else:
-        form = UserCreationForm()
-        if request.method == 'POST':
-            form = UserCreationForm(request.POST)
-            if form.is_valid():
-                form.save()
-        context = {'form': form}
-        return render(request, 'accounts/register.html', context)
 
 class LoginView(View):
     @method_decorator(unauthenticated_user)
@@ -100,8 +88,6 @@ class ExerciseForm(View):
             form.save()
             return redirect('teacher_panel')
         return render(request, 'accounts/exercise_form.html', {'form': form})
-
-
 
 class StudentPanel(View):
     exercises = Exercise.objects.all()
