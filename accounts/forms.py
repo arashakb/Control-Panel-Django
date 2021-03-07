@@ -27,7 +27,7 @@ class ExerciseForm(forms.ModelForm):
 class AnswerForm(forms.ModelForm):
 	class Meta:
 		model = Solution
-		fields = ['studentsub', 'exercisesub', 'file']
+		fields = ['file']
 
 class ScoreForm(forms.ModelForm):
 	class Meta:

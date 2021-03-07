@@ -5,6 +5,11 @@
 <br>
 <form method="POST" enctype="multipart/form-data">
   {% csrf_token %}
+  <hr>
+  <h3>
+    Question:
+  </h3><h5>{{exercise.description}}</h5>
+  <hr>
   {{form.as_p}}
   <button type="submit" class="btn btn-primary">Upload Exercise</button>
 </form>

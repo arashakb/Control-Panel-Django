@@ -24,13 +24,15 @@ class LoginView(View):
     @method_decorator(unauthenticated_user)
     def post(self, request):
         username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
-        user = authenticate(username=username, password=password)
+        user = authenticate(username=username, email=email, password=password)
         if user is not None:
             login(request, user)
             return redirect('teacher_panel')
         else:
             messages.info(request, 'Username Or Password is incorrect')
+            return render(request, 'accounts/login.html')
 
     @method_decorator(unauthenticated_user)
     def get(self, request):
@@ -47,6 +49,7 @@ class TeacherPanel(View):
     exercises = Exercise.objects.all()
     total_exercises = exercises.count()
     videos = Submission.objects.all()
+
 
     @method_decorator(login_required)
     @method_decorator(teacher_only)
@@ -96,7 +99,8 @@ class StudentPanel(View):
     @method_decorator(allowed_users(allowed_roles=['student']))
     @method_decorator(login_required)
     def get(self, request, *args, **kwargs):
-        context = {'exercises': self.exercises, 'videos': self.videos}
+        solutions = request.user.student.solution_set.all()
+        context = {'exercises': self.exercises, 'videos': self.videos, 'solutions': solutions}
         return render(request, 'accounts/studentpanel.html', context)
 
 @login_required(login_url='login')
@@ -140,18 +144,22 @@ class SubmitAnswer(View):
     @method_decorator(allowed_users(allowed_roles=['student']))
     def get(self, request, pk, *args, **kwargs):
         student = Solution.objects.get(id=pk)
+        exercise = Exercise.objects.get(id=pk)
         form = self.form_class(instance=student)
-        return render(request, 'accounts/submit_answer.html', {'form': form})
+        context = {'form': form, 'exercise': exercise}
+        return render(request, 'accounts/submit_answer.html', context)
 
     @method_decorator(login_required)
     @method_decorator(allowed_users(allowed_roles=['student']))
     def post(self, request, pk, *args, **kwargs):
         student = Solution.objects.get(id=pk)
+        exercise = Exercise.objects.get(id=pk)
         form = self.form_class(request.POST, request.FILES, instance=student)
         if form.is_valid():
             form.save()
             return redirect('student_panel')
-        return render(request, 'accounts/submit_answer.html', {'form': form})
+        context = {'form': form, 'exercise': exercise}
+        return render(request, 'accounts/submit_answer.html', context)
 
 
 class GivingScore(View):

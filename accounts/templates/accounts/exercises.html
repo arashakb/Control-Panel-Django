@@ -25,10 +25,11 @@ tr:nth-child(even) {
     <th>Update Date</th>
     <th>Solution</th>
     <th>Mark</th>
+
   </tr>
   {% for solution in solutions %}
   <tr>
-    <td>{{solution.studentsub.student_id}}</td>
+    <td>{{solution.student.student_id}}</td>
     <td>{{solution.date_created}}</td>
     <td>
       <a href="{{ solution.file.url }}" class="btn btn-primary btn-sm">
@@ -44,6 +45,7 @@ tr:nth-child(even) {
     </td>
   </tr>
   {% endfor %}
+
 
 </table>
 

@@ -24,12 +24,22 @@ tr:nth-child(even) {
     <th>Student Number</th>
     <th>Date Updated</th>
     <th>Submit Answer</th>
+    <th>Mark</th>
   </tr>
   {% for exercise in exercises %}
   <tr>
     <td>{{exercise}}</td>
     <td>{{exercise.date_created}}</td>
     <td><a href="{% url 'submit_answer' exercise.id %}">Enter</a></td>
+<td>
+    {% for solution in solutions %}
+
+    {% if solution.exercise == exercise %}
+    {{solution.mark}}
+    {% endif %}
+
+    {% endfor %}
+    </td>
   </tr>
   {% endfor %}
 
