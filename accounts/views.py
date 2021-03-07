@@ -45,33 +45,36 @@ class LogoutView(View):
 
 
 class TeacherPanel(View):
-    form_class = VideoForm
-    exercises = Exercise.objects.all()
-    total_exercises = exercises.count()
-    videos = Submission.objects.all()
-
 
     @method_decorator(login_required)
     @method_decorator(teacher_only)
     def get(self, request, *args, **kwargs):
-        form = self.form_class()
+        form_class = VideoForm
+        exercises = Exercise.objects.all()
+        total_exercises = exercises.count()
+        videos = Submission.objects.all()
+        form = form_class()
 
-        context = {'exercises': self.exercises, 'total_exercises': self.total_exercises, 'videos': self.videos, 'form': form}
+        context = {'exercises': exercises, 'total_exercises': total_exercises, 'videos': videos, 'form': form}
         return render(request, 'accounts/teacherpanel.html', context)
 
     @method_decorator(login_required)
     @method_decorator(teacher_only)
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST, request.FILES)
+        form_class = VideoForm
+        exercises = Exercise.objects.all()
+        total_exercises = exercises.count()
+        videos = Submission.objects.all()
+        form = form_class(request.POST, request.FILES)
         video_name = request.FILES['video'].name
         if '.mp4' in video_name:
             if form.is_valid():
                 form.save()
-                return redirect('teacher_panel')
+                return redirect('home')
         else:
             return redirect('bad_type')
 
-        context = {'exercises': self.exercises, 'total_exercises': self.total_exercises, 'videos': self.videos, 'form': form}
+        context = {'exercises': exercises, 'total_exercises': total_exercises, 'videos': videos, 'form': form}
         return render(request, 'accounts/teacherpanel.html', context)
 
 class ExerciseForm(View):
@@ -124,6 +127,7 @@ class ExerciseView(View):
         exercise = Exercise.objects.get(id=pk)
         students = Student.objects.all()
         solutions = exercise.solution_set.all()
+
         context = {'students': students, 'exercise': exercise, 'solutions': solutions}
         return render(request, 'accounts/exercises.html', context)
 
@@ -143,7 +147,10 @@ class SubmitAnswer(View):
     @method_decorator(login_required)
     @method_decorator(allowed_users(allowed_roles=['student']))
     def get(self, request, pk, *args, **kwargs):
-        student = Solution.objects.get(id=pk)
+        try:
+            student = Solution.objects.get(exercise__id=pk)
+        except:
+            student = None
         exercise = Exercise.objects.get(id=pk)
         form = self.form_class(instance=student)
         context = {'form': form, 'exercise': exercise}
@@ -152,14 +159,17 @@ class SubmitAnswer(View):
     @method_decorator(login_required)
     @method_decorator(allowed_users(allowed_roles=['student']))
     def post(self, request, pk, *args, **kwargs):
-        student = Solution.objects.get(id=pk)
+        try:
+            solutions = Solution.objects.get(exercise__id=pk)
+        except:
+            solutions = None
         exercise = Exercise.objects.get(id=pk)
-        form = self.form_class(request.POST, request.FILES, instance=student)
+        form = self.form_class(request.POST, request.FILES, instance=solutions)
         if form.is_valid():
             form.save()
             return redirect('student_panel')
         context = {'form': form, 'exercise': exercise}
-        return render(request, 'accounts/submit_answer.html', context)
+        return render(request, 'accounts/studentpanel.html', context)
 
 
 class GivingScore(View):
